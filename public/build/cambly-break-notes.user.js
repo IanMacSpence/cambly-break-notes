@@ -685,7 +685,11 @@
         registerMenu();
       });
     }
-    init();
+    function whenBodyReady(fn) {
+      if (document.body) return fn();
+      window.addEventListener("DOMContentLoaded", () => fn(), { once: true });
+    }
+    whenBodyReady(init);
   }
   (() => {
     initBreakNotesApp();
