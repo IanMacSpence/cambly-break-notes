@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview", 
+    "build:userscript": "vite build --mode userscript",
+    "build:userscript:watch": "vite build --mode userscript --watch"
   },
   "devDependencies": {
     "vite": "^7.2.4"
