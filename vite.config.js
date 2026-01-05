@@ -1,4 +1,6 @@
 import { defineConfig } from "vite";
+import fs from "node:fs";
+import path from "node:path";
 
 // Userscript header injected at top of the final bundle:
 const USERSCRIPT_BANNER = `// ==UserScript==
@@ -13,17 +15,38 @@ const USERSCRIPT_BANNER = `// ==UserScript==
 // @grant        GM_setValue
 // ==/UserScript==`;
 
+function copyToPublicBuild() {
+  return {
+    name: "copy-userscript-to-public-build",
+    writeBundle(_, bundle) {
+      const outFile = Object.keys(bundle).find((k) =>
+        k.endsWith("cambly-break-notes.user.js")
+      );
+      if (!outFile) return;
+
+      const srcPath = path.resolve("dist-userscript", outFile);
+      const destDir = path.resolve("public", "build");
+      const destPath = path.join(destDir, "cambly-break-notes.user.js");
+
+      fs.mkdirSync(destDir, { recursive: true });
+      fs.copyFileSync(srcPath, destPath);
+
+      console.log(`[userscript] Copied -> public/build/cambly-break-notes.user.js`);
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const isUserscript = mode === "userscript";
 
   return {
     build: isUserscript
       ? {
-          // IMPORTANT: output into /public so the Vite dev server can serve it
-          outDir: "public/build",
+          // Build output goes here (NOT inside public)
+          outDir: "dist-userscript",
           emptyOutDir: true,
 
-          // Single-file IIFE bundle (no chunks)
+          // Single-file IIFE bundle
           lib: {
             entry: "src/main.user.js",
             name: "CamblyBreakNotes",
@@ -37,10 +60,11 @@ export default defineConfig(({ mode }) => {
             },
           },
 
-          // Optional but useful while debugging
+          // Debug-friendly
           sourcemap: true,
           minify: false,
         }
       : {},
+    plugins: isUserscript ? [copyToPublicBuild()] : [],
   };
 });
