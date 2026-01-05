@@ -629,6 +629,12 @@
       });
     }
     function sync() {
+      console.log(
+        "[BreakNotes] sync() events:",
+        document.querySelectorAll(EVENT_SELECTOR).length,
+        "breaks:",
+        document.querySelectorAll(BREAK_SELECTOR).length
+      );
       const allEvents = document.querySelectorAll(EVENT_SELECTOR);
       allEvents.forEach((el) => {
         if (el.matches(BREAK_SELECTOR)) {
@@ -674,6 +680,7 @@
       });
     }
     function init() {
+      console.log("[BreakNotes] init() readyState:", document.readyState, "has body:", !!document.body);
       ensureStyles();
       addGlobalPopoverGuards();
       sync();

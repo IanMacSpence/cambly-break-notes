@@ -1,6 +1,7 @@
 export function initBreakNotesApp() {
-  alert("[DEV] initBreakNotesApp() called ✅");
   "use strict";
+  alert("[DEV] initBreakNotesApp() called ✅");
+
 
   const BREAK_SELECTOR = ".rbc-event.reservation_availabilities.break";
   const EVENT_SELECTOR = ".rbc-event";
@@ -745,6 +746,9 @@ export function initBreakNotesApp() {
 
   // ---------- Sync ----------
   function sync() {
+    console.log("[BreakNotes] sync() events:", document.querySelectorAll(EVENT_SELECTOR).length,
+            "breaks:", document.querySelectorAll(BREAK_SELECTOR).length);
+
     const allEvents = document.querySelectorAll(EVENT_SELECTOR);
     allEvents.forEach((el) => {
       if (el.matches(BREAK_SELECTOR)) {
@@ -802,6 +806,8 @@ export function initBreakNotesApp() {
   }
 
   function init() {
+    console.log("[BreakNotes] init() readyState:", document.readyState, "has body:", !!document.body);
+
     ensureStyles();
     addGlobalPopoverGuards();
     sync();
