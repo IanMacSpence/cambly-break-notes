@@ -63,7 +63,7 @@
     return null;
   }
   function initBreakNotesApp() {
-    alert("[DEV] initBreakNotesApp() called ✅");
+    alert("[DEV] initBreakNotesApp() called version 2.1 ✅");
     const hasGM = typeof GM_getValue === "function" && typeof GM_setValue === "function";
     function loadSettings() {
       try {

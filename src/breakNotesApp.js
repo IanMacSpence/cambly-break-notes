@@ -22,7 +22,7 @@ import {
 
 export function initBreakNotesApp() {
   "use strict";
-  alert("[DEV] initBreakNotesApp() called ✅");
+  alert("[DEV] initBreakNotesApp() called version 2.1 ✅");
   // ---------- Storage helpers ----------
 
   const hasGM =
