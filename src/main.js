@@ -1,24 +1,32 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+// Main wiring for break notes app
+import { ensureStyles } from './styles.js';
+import { startObserver, sync } from './observer.js';
+import { addGlobalPopoverGuards } from './popover.js';
+import { restoreBackupHandle } from './idb.js';
+import { registerMenu } from './menu.js'; // We'll create this
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+export function initBreakNotesApp() {
+  "use strict";
+  alert("[DEV] initBreakNotesApp() called ✅");
 
-setupCounter(document.querySelector('#counter'))
+  console.log("[BreakNotes] init() readyState:", document.readyState, "has body:", !!document.body);
+
+  ensureStyles();
+  addGlobalPopoverGuards();
+  sync();
+  setTimeout(sync, 200);
+  setTimeout(sync, 800);
+  setTimeout(sync, 1600);
+  startObserver();
+
+  restoreBackupHandle().finally(() => {
+    registerMenu();
+  });
+}
+
+function whenBodyReady(fn) {
+  if (document.body) return fn();
+  window.addEventListener("DOMContentLoaded", () => fn(), { once: true });
+}
+
+whenBodyReady(initBreakNotesApp);
