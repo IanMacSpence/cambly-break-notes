@@ -360,15 +360,15 @@
       tx.oncomplete = () => db.close();
     });
   }
-  let backupDirHandle$1 = null;
+  let backupDirHandle = null;
   function setBackupDirHandle(handle) {
-    backupDirHandle$1 = handle;
+    backupDirHandle = handle;
   }
   async function restoreBackupHandle() {
     if (!supportsFileSystemAccess$1()) return;
     try {
       const handle = await idbGet(IDB_HANDLE_KEY);
-      if (handle) backupDirHandle$1 = handle;
+      if (handle) backupDirHandle = handle;
     } catch (err) {
       console.warn("[BreakNotes] restoreBackupHandle failed", err);
     }
@@ -420,9 +420,9 @@
     const s = loadSettings();
     if (!s.autoBackupEnabled) return;
     if (!supportsFileSystemAccess()) return;
-    if (!backupDirHandle$1) return;
+    if (!backupDirHandle) return;
     try {
-      const ok = await ensureDirPermission(backupDirHandle$1);
+      const ok = await ensureDirPermission(backupDirHandle);
       if (!ok) return;
       const payload = {
         version: 1,
@@ -432,12 +432,12 @@
         data: map || {}
       };
       const filename = `cambly-break-notes-backup-${stampNow()}-${reason}.json`;
-      const fileHandle = await backupDirHandle$1.getFileHandle(filename, { create: true });
+      const fileHandle = await backupDirHandle.getFileHandle(filename, { create: true });
       const writable = await fileHandle.createWritable();
       await writable.write(JSON.stringify(payload, null, 2));
       await writable.close();
       const csvName = `cambly-break-notes-backup-${stampNow()}-${reason}.csv`;
-      const csvHandle = await backupDirHandle$1.getFileHandle(csvName, { create: true });
+      const csvHandle = await backupDirHandle.getFileHandle(csvName, { create: true });
       const csvWritable = await csvHandle.createWritable();
       await csvWritable.write(toCSV(map || {}));
       await csvWritable.close();
@@ -684,7 +684,6 @@
     });
   }
   function initBreakNotesApp() {
-    alert("[DEV] initBreakNotesApp() called version 20260108-14h50 ✅");
     console.log("[BreakNotes] init() readyState:", document.readyState, "has body:", !!document.body);
     ensureStyles();
     addGlobalPopoverGuards();
@@ -697,11 +696,6 @@
       registerMenu();
     });
   }
-  function whenBodyReady(fn) {
-    if (document.body) return fn();
-    window.addEventListener("DOMContentLoaded", () => fn(), { once: true });
-  }
-  whenBodyReady(initBreakNotesApp);
   (() => {
     initBreakNotesApp();
   })();

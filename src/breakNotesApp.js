@@ -6,7 +6,7 @@ import { registerMenu } from './menu.js';
 
 export function initBreakNotesApp() {
   "use strict";
-  alert("[DEV] initBreakNotesApp() called version 20260108-14h50 ✅");
+  
 
   console.log("[BreakNotes] init() readyState:", document.readyState, "has body:", !!document.body);
 
@@ -22,10 +22,3 @@ export function initBreakNotesApp() {
     registerMenu();
   });
 }
-
-function whenBodyReady(fn) {
-  if (document.body) return fn();
-  window.addEventListener("DOMContentLoaded", () => fn(), { once: true });
-}
-
-whenBodyReady(initBreakNotesApp);
